@@ -1,44 +1,26 @@
 # Troldtekt Loft Beregner
 
-En simpel web-beregner til planlægning af Troldtekt loftplader.
+Webbaseret beregner til planlægning af Troldtekt loftplader.
 
-Pladerne er faste mål:
+Plader:
 - 120 cm x 60 cm
 
-Du indtaster rummets mål i cm, og programmet beregner:
-
-✅ Hvor mange hele plader der passer  
-✅ Hvor meget der skal skæres i start og slut  
-✅ Symmetrisk placering (så loftet ser pænt ud)  
-✅ Skitsevisning af layout  
-✅ Undgår kantstykker under valgt minimum (standard 10 cm)  
-✅ Viser både normal og roteret plade-retning
-
----
-
-## Brug
-
-1. Åbn siden i browseren (index.html)
-2. Indtast rum længde og bredde i cm
-3. Tryk **Beregn**
-4. Se anbefalet layout og skitse
+Funktioner:
+- Indtast rum mål i cm
+- Beregner antal hele plader og rest
+- Symmetrisk start/slut skæring
+- Mulighed for forskydning af midten (offset)
+- Undgår kantstykker under valgt minimum (standard 10 cm)
+- Viser skitse af loftlayout i browseren
+- Viser 2 layouts (normal + drejet 90°)
+- Anbefaler bedste layout
 
 ---
 
-## GitHub Pages (Deploy)
+## GitHub Pages
 
-1. Gå til repo på GitHub
-2. Klik **Settings**
-3. Gå til **Pages**
-4. Under *Branch* vælg:
-   - `main`
-   - `/ (root)`
-5. Klik Save
+Settings → Pages → Deploy from branch → main → root.
 
-Efter få sekunder ligger den online.
+URL vil være:
 
----
-
-## License
-
-MIT License
+https://DITBRUGERNAVN.github.io/REPO-NAVN/
