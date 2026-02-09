@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troldtekt Loft Beregner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1>Troldtekt Loft Beregner</h1>
+
+    <div class="box">
+      <label for="length">Rum længde (cm):</label>
+      <input type="number" id="length" placeholder="Fx 480" />
+
+      <label for="width">Rum bredde (cm):</label>
+      <input type="number" id="width" placeholder="Fx 360" />
+
+      <label for="minPiece">Minimum kantstykke (cm):</label>
+      <input type="number" id="minPiece" value="10" />
+
+      <button id="calcBtn">Beregn</button>
+    </div>
+
+    <div class="result" id="output" style="display:none;"></div>
+
+    <footer>
+      <p>
+        Troldtekt plader: 120 x 60 cm | Lavet til beregning af symmetrisk loftlayout
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
