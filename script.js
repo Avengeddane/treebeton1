@@ -3,10 +3,11 @@ const PLATE_W = 60;
 
 document.getElementById("calcBtn").addEventListener("click", calculate);
 
-function calcCuts(roomSize, plateSize, minPiece) {
+function calcCuts(roomSize, plateSize, minPiece, offset) {
   let fullPlates = Math.floor(roomSize / plateSize);
   let remainder = roomSize - (fullPlates * plateSize);
 
+  // Hvis perfekt match
   if (remainder === 0) {
     return {
       fullPlates,
@@ -17,22 +18,34 @@ function calcCuts(roomSize, plateSize, minPiece) {
     };
   }
 
+  // Standard: symmetrisk
   let startPiece = remainder / 2;
   let endPiece = remainder / 2;
 
+  // Offset flytter "midten"
+  startPiece += offset;
+  endPiece -= offset;
+
+  // Hvis offset gør at vi går under 0
+  if (startPiece < 0 || endPiece < 0) {
+    return {
+      fullPlates,
+      startPiece,
+      endPiece,
+      remainder,
+      valid: false
+    };
+  }
+
+  // Minimum kantstykke kontrol
   if (startPiece < minPiece || endPiece < minPiece) {
-    if (remainder < minPiece * 2) {
-      return {
-        fullPlates,
-        startPiece,
-        endPiece,
-        remainder,
-        valid: false
-      };
-    } else {
-      startPiece = minPiece;
-      endPiece = remainder - minPiece;
-    }
+    return {
+      fullPlates,
+      startPiece,
+      endPiece,
+      remainder,
+      valid: false
+    };
   }
 
   return {
@@ -68,7 +81,7 @@ function drawSketch(canvasId, roomL, roomW, plateL, plateW, cutsL, cutsW) {
   ctx.lineWidth = 2;
   ctx.strokeRect(offsetX, offsetY, drawRoomL, drawRoomW);
 
-  // Lodrette streger (plader i længden)
+  // Lodrette linjer
   let x = cutsL.startPiece;
   while (x < roomL) {
     let drawX = offsetX + x * scale;
@@ -81,7 +94,7 @@ function drawSketch(canvasId, roomL, roomW, plateL, plateW, cutsL, cutsW) {
     x += plateL;
   }
 
-  // Vandrette streger (plader i bredden)
+  // Vandrette linjer
   let y = cutsW.startPiece;
   while (y < roomW) {
     let drawY = offsetY + y * scale;
@@ -116,6 +129,9 @@ function calculate() {
   let width = parseFloat(document.getElementById("width").value);
   let minPiece = parseFloat(document.getElementById("minPiece").value);
 
+  let offset = parseFloat(document.getElementById("offset").value);
+  if (isNaN(offset)) offset = 0;
+
   if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
     alert("Indtast gyldige mål i cm.");
     return;
@@ -124,15 +140,15 @@ function calculate() {
   let layout1 = {
     plateL: PLATE_L,
     plateW: PLATE_W,
-    cutsL: calcCuts(length, PLATE_L, minPiece),
-    cutsW: calcCuts(width, PLATE_W, minPiece)
+    cutsL: calcCuts(length, PLATE_L, minPiece, offset),
+    cutsW: calcCuts(width, PLATE_W, minPiece, offset)
   };
 
   let layout2 = {
     plateL: PLATE_W,
     plateW: PLATE_L,
-    cutsL: calcCuts(length, PLATE_W, minPiece),
-    cutsW: calcCuts(width, PLATE_L, minPiece)
+    cutsL: calcCuts(length, PLATE_W, minPiece, offset),
+    cutsW: calcCuts(width, PLATE_L, minPiece, offset)
   };
 
   let score1 = scoreLayout(layout1.cutsL, layout1.cutsW);
@@ -144,7 +160,7 @@ function calculate() {
     if (layout.cutsL.valid && layout.cutsW.valid) {
       return `<span class="ok">OK (ingen stykker under ${minPiece} cm)</span>`;
     }
-    return `<span class="warning">ADVARSEL: Kan ikke undgå stykker under ${minPiece} cm</span>`;
+    return `<span class="warning">ADVARSEL: Offset eller mål gør at der kommer stykker under ${minPiece} cm</span>`;
   }
 
   let out = document.getElementById("output");
@@ -152,6 +168,7 @@ function calculate() {
 
   out.innerHTML = `
     <h2>Resultat</h2>
+    <p><b>Midte forskydning:</b> ${offset.toFixed(1)} cm</p>
 
     <div class="layout">
       <h3>Layout 1 (120 cm langs længde, 60 cm langs bredde)</h3>
@@ -182,7 +199,7 @@ function calculate() {
     <div class="layout">
       <h3>Anbefaling</h3>
       <p><b>Bedste valg:</b> ${best}</p>
-      <p>(baseret på mindst samlet rest og undgåelse af små kantstykker)</p>
+      <p>(baseret på mindst samlet rest + ingen små kantstykker)</p>
     </div>
   `;
 
